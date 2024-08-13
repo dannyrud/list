@@ -10,7 +10,7 @@
 		11FB884D2C6ADFE000263332 /* ListApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FB884C2C6ADFE000263332 /* ListApp.swift */; };
 		11FB884F2C6ADFE000263332 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FB884E2C6ADFE000263332 /* Persistence.swift */; };
 		11FB88522C6ADFE000263332 /* List.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 11FB88502C6ADFE000263332 /* List.xcdatamodeld */; };
-		11FB88542C6ADFE000263332 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FB88532C6ADFE000263332 /* ContentView.swift */; };
+		11FB88542C6ADFE000263332 /* TaskListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FB88532C6ADFE000263332 /* TaskListView.swift */; };
 		11FB88562C6ADFE100263332 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11FB88552C6ADFE100263332 /* Assets.xcassets */; };
 		11FB885A2C6ADFE100263332 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11FB88592C6ADFE100263332 /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
@@ -20,7 +20,7 @@
 		11FB884C2C6ADFE000263332 /* ListApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListApp.swift; sourceTree = "<group>"; };
 		11FB884E2C6ADFE000263332 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		11FB88512C6ADFE000263332 /* List.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = List.xcdatamodel; sourceTree = "<group>"; };
-		11FB88532C6ADFE000263332 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		11FB88532C6ADFE000263332 /* TaskListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListView.swift; sourceTree = "<group>"; };
 		11FB88552C6ADFE100263332 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		11FB88572C6ADFE100263332 /* List.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = List.entitlements; sourceTree = "<group>"; };
 		11FB88592C6ADFE100263332 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -58,7 +58,7 @@
 			children = (
 				11FB884C2C6ADFE000263332 /* ListApp.swift */,
 				11FB884E2C6ADFE000263332 /* Persistence.swift */,
-				11FB88532C6ADFE000263332 /* ContentView.swift */,
+				11FB88532C6ADFE000263332 /* TaskListView.swift */,
 				11FB88552C6ADFE100263332 /* Assets.xcassets */,
 				11FB88572C6ADFE100263332 /* List.entitlements */,
 				11FB88502C6ADFE000263332 /* List.xcdatamodeld */,
@@ -147,7 +147,7 @@
 			files = (
 				11FB884D2C6ADFE000263332 /* ListApp.swift in Sources */,
 				11FB884F2C6ADFE000263332 /* Persistence.swift in Sources */,
-				11FB88542C6ADFE000263332 /* ContentView.swift in Sources */,
+				11FB88542C6ADFE000263332 /* TaskListView.swift in Sources */,
 				11FB88522C6ADFE000263332 /* List.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

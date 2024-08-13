@@ -1,0 +1,30 @@
+{
+  "" : {
+    "dependencies" : "/Users/elianadaugherty/Developer/Personal/list/DerivedData/List/Index.noindex/Build/Intermediates.noindex/List.build/Debug-iphoneos/List.build/Objects-normal/arm64/List-master.d",
+    "diagnostics" : "/Users/elianadaugherty/Developer/Personal/list/DerivedData/List/Index.noindex/Build/Intermediates.noindex/List.build/Debug-iphoneos/List.build/Objects-normal/arm64/List-master.dia",
+    "emit-module-dependencies" : "/Users/elianadaugherty/Developer/Personal/list/DerivedData/List/Index.noindex/Build/Intermediates.noindex/List.build/Debug-iphoneos/List.build/Objects-normal/arm64/List-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/elianadaugherty/Developer/Personal/list/DerivedData/List/Index.noindex/Build/Intermediates.noindex/List.build/Debug-iphoneos/List.build/Objects-normal/arm64/List-master-emit-module.dia",
+    "swift-dependencies" : "/Users/elianadaugherty/Developer/Personal/list/DerivedData/List/Index.noindex/Build/Intermediates.noindex/List.build/Debug-iphoneos/List.build/Objects-normal/arm64/List-master.swiftdeps"
+  },
+  "/Users/elianadaugherty/Developer/Personal/list/DerivedData/List/Index.noindex/Build/Intermediates.noindex/List.build/Debug-iphoneos/List.build/DerivedSources/CoreDataGenerated/List/Item+CoreDataClass.swift" : {
+
+  },
+  "/Users/elianadaugherty/Developer/Personal/list/DerivedData/List/Index.noindex/Build/Intermediates.noindex/List.build/Debug-iphoneos/List.build/DerivedSources/CoreDataGenerated/List/Item+CoreDataProperties.swift" : {
+
+  },
+  "/Users/elianadaugherty/Developer/Personal/list/DerivedData/List/Index.noindex/Build/Intermediates.noindex/List.build/Debug-iphoneos/List.build/DerivedSources/CoreDataGenerated/List/List+CoreDataModel.swift" : {
+
+  },
+  "/Users/elianadaugherty/Developer/Personal/list/DerivedData/List/Index.noindex/Build/Intermediates.noindex/List.build/Debug-iphoneos/List.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+
+  },
+  "/Users/elianadaugherty/Developer/Personal/list/List/ContentView.swift" : {
+
+  },
+  "/Users/elianadaugherty/Developer/Personal/list/List/ListApp.swift" : {
+
+  },
+  "/Users/elianadaugherty/Developer/Personal/list/List/Persistence.swift" : {
+
+  }
+}
