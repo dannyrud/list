@@ -9,19 +9,21 @@ import SwiftUI
 import CoreData
 
 struct TaskListView: View {
+    @State private var isShowingSheet = false
+    @State private var itemName: String = ""
     @Environment(\.managedObjectContext) private var viewContext
 
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \ListItem.completedDate, ascending: true)],
         animation: .default)
-    private var items: FetchedResults<Item>
+    private var items: FetchedResults<ListItem>
 
     var body: some View {
         NavigationView {
             List {
                 ForEach(items) { item in
                     HStack {
-                        NavigationLink(destination: Text("Item at \(item.timestamp!, formatter: itemFormatter)")) {
+                        NavigationLink(destination: Text("Item at \(item.completedDate!, formatter: itemFormatter)")) {
                             Text(item.name!)
                         }
 
@@ -45,20 +47,43 @@ struct TaskListView: View {
                 }
 #endif
                 ToolbarItem {
-                    Button(action: addItem) {
+                    Button(action: {isShowingSheet = true}) {
                         Label("Add Item", systemImage: "plus")
                     }
                 }
             }
-            Text("Select an item")
+            .sheet(isPresented: $isShowingSheet) {
+                            VStack {
+                                Text("Enter Item Name")
+                                    .font(.headline)
+                                TextField("Name", text: $itemName)
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    .padding()
+                                HStack {
+                                    Button("Add Item") {
+                                        addItem()
+                                        isShowingSheet = false
+                                    }
+                                    .padding()
+                                    .disabled(itemName.isEmpty)
+                                    Spacer()
+                                    Button("Cancel") {
+                                        isShowingSheet = false
+                                    }
+                                    .padding()
+                                }
+                            }
+                            .padding()
+                        }
+                        Text("Select an item")
         }
     }
 
     private func addItem() {
         withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
-            newItem.name = "Test"
+            let ListItem = ListItem(context: viewContext)
+            ListItem.completedDate = Date()
+            ListItem.name = itemName
             do {
                 try viewContext.save()
             } catch {
@@ -66,9 +91,10 @@ struct TaskListView: View {
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
             }
         }
+        itemName = ""
     }
 
-    private func deleteItem(_ item: Item) {
+    private func deleteItem(_ item: ListItem) {
         withAnimation {
             viewContext.delete(item)
 
