@@ -1,0 +1,40 @@
+{
+  "source": "/Users/elianadaugherty/Developer/Personal/list/List/TaskListView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Select an item"
+      },
+      {
+        "comment": "",
+        "key": "Item at %@\nDescription: %@"
+      },
+      {
+        "comment": "",
+        "key": "Add Item"
+      },
+      {
+        "comment": "",
+        "key": "Enter Item Name"
+      },
+      {
+        "comment": "",
+        "key": "Enter Description (optional)"
+      },
+      {
+        "comment": "",
+        "key": "Name"
+      },
+      {
+        "comment": "",
+        "key": "Description"
+      },
+      {
+        "comment": "",
+        "key": "Cancel"
+      }
+    ]
+  },
+  "version": 1
+}

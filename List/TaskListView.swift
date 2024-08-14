@@ -11,6 +11,7 @@ import CoreData
 struct TaskListView: View {
     @State private var isShowingSheet = false
     @State private var itemName: String = ""
+    @State private var itemDescription: String = ""
     @Environment(\.managedObjectContext) private var viewContext
 
     @FetchRequest(
@@ -23,7 +24,7 @@ struct TaskListView: View {
             List {
                 ForEach(items) { item in
                     HStack {
-                        NavigationLink(destination: Text("Item at \(item.completedDate!, formatter: itemFormatter)")) {
+                        NavigationLink(destination: Text("Item at \(item.completedDate!, formatter: itemFormatter)\nDescription: \(item.description)")) {
                             Text(item.name!)
                         }
 
@@ -59,6 +60,11 @@ struct TaskListView: View {
                                 TextField("Name", text: $itemName)
                                     .textFieldStyle(RoundedBorderTextFieldStyle())
                                     .padding()
+                                Text("Enter Description (optional)")
+                                    .font(.headline)
+                                    TextField("Description", text: $itemDescription) // Added text field for description
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    .padding()
                                 HStack {
                                     Button("Add Item") {
                                         addItem()
@@ -84,6 +90,7 @@ struct TaskListView: View {
             let ListItem = ListItem(context: viewContext)
             ListItem.completedDate = Date()
             ListItem.name = itemName
+            ListItem.desc = itemDescription
             do {
                 try viewContext.save()
             } catch {
@@ -92,6 +99,7 @@ struct TaskListView: View {
             }
         }
         itemName = ""
+        itemDescription = ""
     }
 
     private func deleteItem(_ item: ListItem) {
