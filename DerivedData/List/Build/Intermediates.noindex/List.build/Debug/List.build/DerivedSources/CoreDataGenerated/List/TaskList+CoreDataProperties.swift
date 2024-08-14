@@ -2,7 +2,7 @@
 //  TaskList+CoreDataProperties.swift
 //  
 //
-//  Created by Eliana Daugherty on 8/13/24.
+//  Created by Eliana Daugherty on 8/14/24.
 //
 //  This file was automatically generated and should not be edited.
 //
@@ -17,7 +17,7 @@ extension TaskList {
         return NSFetchRequest<TaskList>(entityName: "TaskList")
     }
 
-    @NSManaged public var dateCreated: Date?
+    @NSManaged public var createdDate: Date?
     @NSManaged public var title: String?
     @NSManaged public var taskListToListItem: NSSet?
 

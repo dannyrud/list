@@ -13,6 +13,7 @@
 		11FB88542C6ADFE000263332 /* TaskListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FB88532C6ADFE000263332 /* TaskListView.swift */; };
 		11FB88562C6ADFE100263332 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11FB88552C6ADFE100263332 /* Assets.xcassets */; };
 		11FB885A2C6ADFE100263332 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11FB88592C6ADFE100263332 /* Preview Assets.xcassets */; };
+		AEEBBCFF2C6D3F4800E27208 /* ListManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEBBCFE2C6D3F4800E27208 /* ListManagerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		11FB88552C6ADFE100263332 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		11FB88572C6ADFE100263332 /* List.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = List.entitlements; sourceTree = "<group>"; };
 		11FB88592C6ADFE100263332 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		AEEBBCFE2C6D3F4800E27208 /* ListManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListManagerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +60,7 @@
 			children = (
 				11FB884C2C6ADFE000263332 /* ListApp.swift */,
 				11FB884E2C6ADFE000263332 /* Persistence.swift */,
+				AEEBBCFE2C6D3F4800E27208 /* ListManagerView.swift */,
 				11FB88532C6ADFE000263332 /* TaskListView.swift */,
 				11FB88552C6ADFE100263332 /* Assets.xcassets */,
 				11FB88572C6ADFE100263332 /* List.entitlements */,
@@ -145,6 +148,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AEEBBCFF2C6D3F4800E27208 /* ListManagerView.swift in Sources */,
 				11FB884D2C6ADFE000263332 /* ListApp.swift in Sources */,
 				11FB884F2C6ADFE000263332 /* Persistence.swift in Sources */,
 				11FB88542C6ADFE000263332 /* TaskListView.swift in Sources */,

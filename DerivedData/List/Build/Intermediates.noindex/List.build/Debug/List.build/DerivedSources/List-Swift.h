@@ -338,7 +338,7 @@ SWIFT_CLASS_NAMED("TaskList")
 
 
 @interface TaskList (SWIFT_EXTENSION(List))
-@property (nonatomic, copy) NSDate * _Nullable dateCreated;
+@property (nonatomic, copy) NSDate * _Nullable createdDate;
 @property (nonatomic, copy) NSString * _Nullable title;
 @property (nonatomic, strong) NSSet * _Nullable taskListToListItem;
 @end

@@ -13,8 +13,9 @@ struct ListApp: App {
 
     var body: some Scene {
         WindowGroup {
-            TaskListView()
+            ListManagerView() // Change to ListManagerView
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
 }
+

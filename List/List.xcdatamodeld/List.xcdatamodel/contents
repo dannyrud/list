@@ -7,7 +7,7 @@
         <relationship name="listItemToTaskList" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TaskList" inverseName="taskListToListItem" inverseEntity="TaskList"/>
     </entity>
     <entity name="TaskList" representedClassName="TaskList" syncable="YES" codeGenerationType="class">
-        <attribute name="dateCreated" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="createdDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <relationship name="taskListToListItem" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ListItem" inverseName="listItemToTaskList" inverseEntity="ListItem"/>
     </entity>

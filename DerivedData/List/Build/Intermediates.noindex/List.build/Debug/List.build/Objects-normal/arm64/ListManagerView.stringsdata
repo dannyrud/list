@@ -1,0 +1,28 @@
+{
+  "source": "/Users/elianadaugherty/Developer/Personal/list/List/ListManagerView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Manage Lists"
+      },
+      {
+        "comment": "",
+        "key": "Add List"
+      },
+      {
+        "comment": "",
+        "key": "Enter List Name"
+      },
+      {
+        "comment": "",
+        "key": "Name"
+      },
+      {
+        "comment": "",
+        "key": "Cancel"
+      }
+    ]
+  },
+  "version": 1
+}

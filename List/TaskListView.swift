@@ -7,54 +7,22 @@
 
 import SwiftUI
 import CoreData
-struct DetailView: View {
-    var item: ListItem
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            Text(item.name ?? "Unnamed Item")
-                .font(.largeTitle)
-                .bold()
-
-            
-            if let description = item.desc, !description.isEmpty {
-                           Text(description)
-                    .font(.body)
-                               .padding(.top, 10)
-                       }
-
-            if let completedDate = item.completedDate {
-                Text("Completed on: \(completedDate, formatter: itemFormatter)")
-                    .font(.footnote)
-                    .foregroundColor(.gray)
-            }
-
-            Spacer()
-        }
-        .padding()
-        .navigationTitle("Item Details")
-    }
-}
-
 
 struct TaskListView: View {
+    @Environment(\.managedObjectContext) private var viewContext
+    @ObservedObject var list: TaskList
+
     @State private var isShowingSheet = false
     @State private var itemName: String = ""
     @State private var itemDescription: String = ""
-    @Environment(\.managedObjectContext) private var viewContext
 
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \ListItem.completedDate, ascending: true)],
-        animation: .default)
-    private var items: FetchedResults<ListItem>
+    @State private var items: [ListItem] = []
 
     var body: some View {
         NavigationView {
             List {
                 ForEach(items) { item in
                     HStack {
-                        NavigationLink(destination: DetailView(item: item) ) {
-                        }
                         Toggle(isOn: Binding(
                             get: { item.completedDate != nil },
                             set: { isChecked in
@@ -89,13 +57,13 @@ struct TaskListView: View {
                 .onDelete(perform: deleteItems)
             }
             .toolbar {
-#if os(iOS)
+                #if os(iOS)
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
                 }
-#endif
+                #endif
                 ToolbarItem {
-                    Button(action: {isShowingSheet = true}) {
+                    Button(action: { isShowingSheet = true }) {
                         Label("Add Item", systemImage: "plus")
                     }
                 }
@@ -130,16 +98,34 @@ struct TaskListView: View {
             }
             Text("Select an item")
         }
+        .onAppear {
+            loadItems()
+        }
+    }
+
+    private func loadItems() {
+        let request: NSFetchRequest<ListItem> = ListItem.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \ListItem.completedDate, ascending: true)]
+        request.predicate = NSPredicate(format: "listItemToTaskList == %@", list)
+
+        do {
+            items = try viewContext.fetch(request)
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
     }
 
     private func addItem() {
         withAnimation {
             let newItem = ListItem(context: viewContext)
-            newItem.completedDate = nil // Initialize with nil
+            newItem.completedDate = nil
             newItem.name = itemName
             newItem.desc = itemDescription
+            newItem.listItemToTaskList = list
             do {
                 try viewContext.save()
+                loadItems() // Refresh items
             } catch {
                 let nsError = error as NSError
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
@@ -154,6 +140,7 @@ struct TaskListView: View {
             viewContext.delete(item)
             do {
                 try viewContext.save()
+                loadItems()
             } catch {
                 let nsError = error as NSError
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
@@ -166,6 +153,7 @@ struct TaskListView: View {
             offsets.map { items[$0] }.forEach(viewContext.delete)
             do {
                 try viewContext.save()
+                loadItems()
             } catch {
                 let nsError = error as NSError
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
@@ -174,7 +162,7 @@ struct TaskListView: View {
     }
 }
 
-// Custom Toggle style to display a checkbox
+
 struct CheckBoxToggleStyle: ToggleStyle {
     func makeBody(configuration: Configuration) -> some View {
         HStack {
@@ -198,5 +186,5 @@ private let itemFormatter: DateFormatter = {
 }()
 
 #Preview {
-    TaskListView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+    ListManagerView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }
