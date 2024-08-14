@@ -8,6 +8,35 @@
 import SwiftUI
 import CoreData
 
+struct DetailView: View {
+    var item: ListItem
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text(item.name ?? "Unnamed Item")
+                .font(.largeTitle)
+                .bold()
+
+
+            if let description = item.desc, !description.isEmpty {
+                           Text(description)
+                    .font(.body)
+                               .padding(.top, 10)
+                       }
+
+            if let completedDate = item.completedDate {
+                Text("Completed on: \(completedDate, formatter: itemFormatter)")
+                    .font(.footnote)
+                    .foregroundColor(.gray)
+            }
+
+            Spacer()
+        }
+        .padding()
+        .navigationTitle("Item Details")
+    }
+}
+
 struct TaskListView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @ObservedObject var list: TaskList
@@ -23,6 +52,8 @@ struct TaskListView: View {
             List {
                 ForEach(items) { item in
                     HStack {
+                        NavigationLink(destination: DetailView(item: item) ) {
+                        }
                         Toggle(isOn: Binding(
                             get: { item.completedDate != nil },
                             set: { isChecked in
