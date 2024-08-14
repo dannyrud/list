@@ -24,9 +24,25 @@ struct TaskListView: View {
             List {
                 ForEach(items) { item in
                     HStack {
-                        NavigationLink(destination: Text("Item at \(item.completedDate!, formatter: itemFormatter)\nDescription: \(item.description)")) {
-                            Text(item.name!)
+                        Toggle(isOn: Binding(
+                            get: { item.completedDate != nil },
+                            set: { isChecked in
+                                if isChecked {
+                                    item.completedDate = Date()
+                                } else {
+                                    item.completedDate = nil
+                                }
+                                do {
+                                    try viewContext.save()
+                                } catch {
+                                    let nsError = error as NSError
+                                    fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                                }
+                            }
+                        )) {
+                            Text(item.name ?? "Unknown Item")
                         }
+                        .toggleStyle(CheckBoxToggleStyle())
 
                         Spacer()
 
@@ -36,7 +52,7 @@ struct TaskListView: View {
                             Image(systemName: "trash")
                                 .foregroundColor(.red)
                         }
-                        .buttonStyle(BorderlessButtonStyle()) // Ensures the button doesn't interfere with the row selection
+                        .buttonStyle(BorderlessButtonStyle())
                     }
                 }
                 .onDelete(perform: deleteItems)
@@ -54,43 +70,43 @@ struct TaskListView: View {
                 }
             }
             .sheet(isPresented: $isShowingSheet) {
-                            VStack {
-                                Text("Enter Item Name")
-                                    .font(.headline)
-                                TextField("Name", text: $itemName)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                                    .padding()
-                                Text("Enter Description (optional)")
-                                    .font(.headline)
-                                    TextField("Description", text: $itemDescription) // Added text field for description
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                                    .padding()
-                                HStack {
-                                    Button("Add Item") {
-                                        addItem()
-                                        isShowingSheet = false
-                                    }
-                                    .padding()
-                                    .disabled(itemName.isEmpty)
-                                    Spacer()
-                                    Button("Cancel") {
-                                        isShowingSheet = false
-                                    }
-                                    .padding()
-                                }
-                            }
-                            .padding()
+                VStack {
+                    Text("Enter Item Name")
+                        .font(.headline)
+                    TextField("Name", text: $itemName)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding()
+                    Text("Enter Description (optional)")
+                        .font(.headline)
+                    TextField("Description", text: $itemDescription)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding()
+                    HStack {
+                        Button("Add Item") {
+                            addItem()
+                            isShowingSheet = false
                         }
-                        Text("Select an item")
+                        .padding()
+                        .disabled(itemName.isEmpty)
+                        Spacer()
+                        Button("Cancel") {
+                            isShowingSheet = false
+                        }
+                        .padding()
+                    }
+                }
+                .padding()
+            }
+            Text("Select an item")
         }
     }
 
     private func addItem() {
         withAnimation {
-            let ListItem = ListItem(context: viewContext)
-            ListItem.completedDate = Date()
-            ListItem.name = itemName
-            ListItem.desc = itemDescription
+            let newItem = ListItem(context: viewContext)
+            newItem.completedDate = nil // Initialize with nil
+            newItem.name = itemName
+            newItem.desc = itemDescription
             do {
                 try viewContext.save()
             } catch {
@@ -105,7 +121,6 @@ struct TaskListView: View {
     private func deleteItem(_ item: ListItem) {
         withAnimation {
             viewContext.delete(item)
-
             do {
                 try viewContext.save()
             } catch {
@@ -118,13 +133,28 @@ struct TaskListView: View {
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
             offsets.map { items[$0] }.forEach(viewContext.delete)
-
             do {
                 try viewContext.save()
             } catch {
                 let nsError = error as NSError
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
             }
+        }
+    }
+}
+
+// Custom Toggle style to display a checkbox
+struct CheckBoxToggleStyle: ToggleStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack {
+            configuration.label
+            Spacer()
+            Image(systemName: configuration.isOn ? "checkmark.square" : "square")
+                .onTapGesture {
+                    configuration.isOn.toggle()
+                }
+                .font(.system(size: 24))
+                .foregroundColor(configuration.isOn ? .blue : .gray)
         }
     }
 }
