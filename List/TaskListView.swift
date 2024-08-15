@@ -17,12 +17,11 @@ struct DetailView: View {
                 .font(.largeTitle)
                 .bold()
 
-
             if let description = item.desc, !description.isEmpty {
-                           Text(description)
+                Text(description)
                     .font(.body)
-                               .padding(.top, 10)
-                       }
+                    .padding(.top, 10)
+            }
 
             if let completedDate = item.completedDate {
                 Text("Completed on: \(completedDate, formatter: itemFormatter)")
@@ -45,15 +44,24 @@ struct TaskListView: View {
     @State private var itemName: String = ""
     @State private var itemDescription: String = ""
 
-    @State private var items: [ListItem] = []
+    @FetchRequest var items: FetchedResults<ListItem>
+
+    init(list: TaskList) {
+        self.list = list
+        _items = FetchRequest<ListItem>(
+            sortDescriptors: [NSSortDescriptor(keyPath: \ListItem.completedDate, ascending: true)],
+            predicate: NSPredicate(format: "listItemToTaskList == %@", list)
+        )
+    }
 
     var body: some View {
         NavigationView {
             List {
                 ForEach(items) { item in
                     HStack {
-                        NavigationLink(destination: DetailView(item: item) ) {
+                        NavigationLink(destination: DetailView(item: item)) {
                         }
+
                         Toggle(isOn: Binding(
                             get: { item.completedDate != nil },
                             set: { isChecked in
@@ -62,12 +70,7 @@ struct TaskListView: View {
                                 } else {
                                     item.completedDate = nil
                                 }
-                                do {
-                                    try viewContext.save()
-                                } catch {
-                                    let nsError = error as NSError
-                                    fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-                                }
+                                saveContext()
                             }
                         )) {
                             Text(item.name ?? "Unknown Item")
@@ -88,11 +91,6 @@ struct TaskListView: View {
                 .onDelete(perform: deleteItems)
             }
             .toolbar {
-                #if os(iOS)
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                #endif
                 ToolbarItem {
                     Button(action: { isShowingSheet = true }) {
                         Label("Add Item", systemImage: "plus")
@@ -129,18 +127,11 @@ struct TaskListView: View {
             }
             Text("Select an item")
         }
-        .onAppear {
-            loadItems()
-        }
     }
 
-    private func loadItems() {
-        let request: NSFetchRequest<ListItem> = ListItem.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(keyPath: \ListItem.completedDate, ascending: true)]
-        request.predicate = NSPredicate(format: "listItemToTaskList == %@", list)
-
+    private func saveContext() {
         do {
-            items = try viewContext.fetch(request)
+            try viewContext.save()
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
@@ -154,13 +145,7 @@ struct TaskListView: View {
             newItem.name = itemName
             newItem.desc = itemDescription
             newItem.listItemToTaskList = list
-            do {
-                try viewContext.save()
-                loadItems() // Refresh items
-            } catch {
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
+            saveContext()
         }
         itemName = ""
         itemDescription = ""
@@ -169,26 +154,14 @@ struct TaskListView: View {
     private func deleteItem(_ item: ListItem) {
         withAnimation {
             viewContext.delete(item)
-            do {
-                try viewContext.save()
-                loadItems()
-            } catch {
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
+            saveContext()
         }
     }
 
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
             offsets.map { items[$0] }.forEach(viewContext.delete)
-            do {
-                try viewContext.save()
-                loadItems()
-            } catch {
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
+            saveContext()
         }
     }
 }
