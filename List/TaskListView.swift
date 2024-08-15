@@ -40,8 +40,11 @@ struct TaskListView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @ObservedObject var list: TaskList
 
-    @State private var isShowingSheet = false
+    @State private var isShowingSheetAdd = false
+    @State private var isShowingSheetGPT = false
     @State private var itemName: String = ""
+    @State private var dishName: String = ""
+    @State private var numPeople: Int = 0
     @State private var itemDescription: String = ""
 
     @FetchRequest var items: FetchedResults<ListItem>
@@ -92,33 +95,80 @@ struct TaskListView: View {
             }
             .toolbar {
                 ToolbarItem {
-                    Button(action: { isShowingSheet = true }) {
+                    Button(action: { isShowingSheetAdd = true }) {
                         Label("Add Item", systemImage: "plus")
                     }
                 }
+                
+                ToolbarItem {
+                    Button(action: { isShowingSheetGPT = true }) {
+                        Image("gpt")
+                        .resizable()
+                        .scaledToFit()
+                    }
+                }
             }
-            .sheet(isPresented: $isShowingSheet) {
+            .sheet(isPresented: $isShowingSheetAdd) {
+                            VStack {
+                                Text("Enter Item Name")
+                                    .font(.headline)
+                                TextField("Name", text: $itemName)
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    .padding()
+                                Text("Enter Description (optional)")
+                                    .font(.headline)
+                                TextField("Description", text: $itemDescription)
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    .padding()
+                                HStack {
+                                    Button("Add Item") {
+                                        addItem()
+                                        isShowingSheetAdd = false
+                                    }
+                                    .padding()
+                                    .disabled(itemName.isEmpty)
+                                    Spacer()
+                                    Button("Cancel") {
+                                        isShowingSheetAdd = false
+                                    }
+                                    .padding()
+                                }
+                            }
+                            .padding()
+            }
+            .sheet(isPresented: $isShowingSheetGPT) {
                 VStack {
-                    Text("Enter Item Name")
+                    Text("What do you want to make?")
                         .font(.headline)
-                    TextField("Name", text: $itemName)
+                    TextField("Dish", text: $dishName)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .padding()
-                    Text("Enter Description (optional)")
+                    Text("How many are you serving?")
                         .font(.headline)
-                    TextField("Description", text: $itemDescription)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding()
+                    Text("Number of people: \(numPeople)")
+                                    .font(.headline)
+                                    .padding()
+
+                                Slider(
+                                    value: Binding(
+                                        get: { Double(numPeople) },
+                                        set: { numPeople = Int($0) }
+                                    ),
+                                    in: 1...100,
+                                    step: 1
+                                )
+                                .padding()
                     HStack {
-                        Button("Add Item") {
-                            addItem()
-                            isShowingSheet = false
+                        Button("Ask your AI assistant") {
+                            isShowingSheetGPT = false
+                            askAi()
                         }
                         .padding()
-                        .disabled(itemName.isEmpty)
+                        .disabled(dishName.isEmpty)
+                        .disabled(numPeople == 0)
                         Spacer()
                         Button("Cancel") {
-                            isShowingSheet = false
+                            isShowingSheetGPT = false
                         }
                         .padding()
                     }
@@ -163,6 +213,10 @@ struct TaskListView: View {
             offsets.map { items[$0] }.forEach(viewContext.delete)
             saveContext()
         }
+    }
+    
+    private func askAi() {
+        print("TO DO")
     }
 }
 
