@@ -120,6 +120,8 @@ struct TaskListView: View {
                     }
                     .listStyle(PlainListStyle())
 
+                    Spacer()
+
                     HStack {
                         Button(action: { isShowingSheetAdd = true }) {
                             Label("Add Item", systemImage: "plus")
@@ -145,23 +147,6 @@ struct TaskListView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .toolbar {
-                ToolbarItem {
-                    Button(action: { isShowingSheetAdd = true }) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                    .disabled(list.title == nil)
-                }
-
-                ToolbarItem {
-                    Button(action: { isShowingSheetGPT = true }) {
-                        Image("gpt")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 20, height: 20)
-                    }
-                }
-            }
             .sheet(isPresented: $isShowingSheetAdd) {
                 VStack {
                     Text("Enter Item Name")
@@ -274,6 +259,7 @@ struct TaskListView: View {
         print("TO DO")
     }
 }
+
 
 struct CheckBoxToggleStyle: ToggleStyle {
     func makeBody(configuration: Configuration) -> some View {
