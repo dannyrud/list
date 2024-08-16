@@ -5,7 +5,18 @@
 	<key>colors</key>
 	<array/>
 	<key>images</key>
-	<array/>
+	<array>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/elianadaugherty/Developer/Personal/list/List/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameGpt</string>
+			<key>relativePath</key>
+			<string>./gpt.imageset</string>
+			<key>swiftSymbol</key>
+			<string>gpt</string>
+		</dict>
+	</array>
 	<key>symbols</key>
 	<array/>
 </dict>

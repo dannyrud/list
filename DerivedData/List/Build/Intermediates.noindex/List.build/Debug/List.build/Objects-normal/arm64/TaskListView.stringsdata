@@ -4,7 +4,15 @@
     "Localizable": [
       {
         "comment": "",
-        "key": "Select an item"
+        "key": "Item Details"
+      },
+      {
+        "comment": "",
+        "key": "Completed on: %@"
+      },
+      {
+        "comment": "",
+        "key": "No list available. Please create a list first."
       },
       {
         "comment": "",
@@ -29,6 +37,26 @@
       {
         "comment": "",
         "key": "Cancel"
+      },
+      {
+        "comment": "",
+        "key": "What do you want to make?"
+      },
+      {
+        "comment": "",
+        "key": "How many are you serving?"
+      },
+      {
+        "comment": "",
+        "key": "Number of people: %lld"
+      },
+      {
+        "comment": "",
+        "key": "Dish"
+      },
+      {
+        "comment": "",
+        "key": "Ask your AI assistant"
       }
     ]
   },

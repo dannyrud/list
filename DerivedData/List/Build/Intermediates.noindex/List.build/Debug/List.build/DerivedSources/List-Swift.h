@@ -321,6 +321,7 @@ SWIFT_CLASS_NAMED("ListItem")
 
 
 
+
 SWIFT_CLASS_NAMED("TaskList")
 @interface TaskList : NSManagedObject
 - (nonnull instancetype)initWithEntity:(NSEntityDescription * _Nonnull)entity insertIntoManagedObjectContext:(NSManagedObjectContext * _Nullable)context OBJC_DESIGNATED_INITIALIZER;
