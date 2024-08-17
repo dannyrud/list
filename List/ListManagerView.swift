@@ -39,10 +39,13 @@ struct ListManagerView: View {
                     }
                 }
                 .navigationTitle("Manage Lists")
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             .toolbar {
                 ToolbarItem(placement: .automatic) {
-                    Button(action: { isShowingAddListSheet = true }) {
+                    Button(action: {
+                        isShowingAddListSheet = true
+                    }) {
                         Label("Add List", systemImage: "plus")
                     }
                 }
@@ -74,6 +77,13 @@ struct ListManagerView: View {
             Text("Select a list")
                 .font(.headline)
                 .foregroundColor(.gray)
+        }
+        .frame(minWidth: 600, minHeight: 400) // Set minimum window size
+        .onAppear {
+            // Resize window to include the add list button
+            if let window = NSApplication.shared.windows.first {
+                window.setContentSize(NSSize(width: 800, height: 600))
+            }
         }
     }
 

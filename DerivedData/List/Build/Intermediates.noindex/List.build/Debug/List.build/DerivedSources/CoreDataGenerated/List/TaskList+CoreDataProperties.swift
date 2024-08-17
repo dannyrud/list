@@ -2,7 +2,7 @@
 //  TaskList+CoreDataProperties.swift
 //  
 //
-//  Created by Eliana Daugherty on 8/16/24.
+//  Created by Eliana Daugherty on 8/17/24.
 //
 //  This file was automatically generated and should not be edited.
 //
