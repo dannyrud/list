@@ -9,7 +9,7 @@ import CoreData
 import SwiftUI
 
 // Define your GPT API-related details
-let apiToken;
+var apiToken = "";
 let apiUrl = "https://api.openai.com/v1/chat/completions"
 
 struct TaskListView: View {
@@ -236,7 +236,7 @@ struct TaskListView: View {
   }
 
   func askAi() {
-
+    apiToken = ProcessInfo.processInfo.environment["GPT_API_KEY"]!
     // Prepare the request
     let messages = [
       [
