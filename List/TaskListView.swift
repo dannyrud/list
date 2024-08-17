@@ -8,34 +8,6 @@
 import SwiftUI
 import CoreData
 
-struct DetailView: View {
-    var item: ListItem
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            Text(item.name ?? "Unnamed Item")
-                .font(.largeTitle)
-                .bold()
-
-            if let description = item.desc, !description.isEmpty {
-                Text(description)
-                    .font(.body)
-                    .padding(.top, 10)
-            }
-
-            if let completedDate = item.completedDate {
-                Text("Completed on: \(completedDate, formatter: itemFormatter)")
-                    .font(.footnote)
-                    .foregroundColor(.gray)
-            }
-
-            Spacer()
-        }
-        .padding()
-        .navigationTitle("Item Details")
-    }
-}
-
 struct TaskListView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @ObservedObject var list: TaskList
@@ -58,47 +30,47 @@ struct TaskListView: View {
     }
 
     var body: some View {
-        NavigationView {
-            VStack {
-                if list.title != nil {
-                    Text(list.title ?? "Please add list")
-                        .font(.largeTitle)
-                        .bold()
-                        .padding(.top, 20)
-                        .padding(.bottom, 20)
+        GeometryReader { geometry in
+            NavigationView {
+                VStack {
+                    if list.title != nil {
+                        Text(list.title ?? "Please add list")
+                            .font(.largeTitle)
+                            .bold()
+                            .padding(.top, 20)
+                            .padding(.bottom, 20)
 
-                    List {
-                        ForEach(items) { item in
-                            VStack(alignment: .leading) {
-                                HStack {
-                                    Toggle(isOn: Binding(
-                                        get: { item.completedDate != nil },
-                                        set: { isChecked in
-                                            if isChecked {
-                                                item.completedDate = Date()
-                                            } else {
-                                                item.completedDate = nil
-                                            }
-                                            saveContext()
-                                        }
-                                    )) {
-                                        Text(item.name ?? "Unknown Item")
-                                    }
-                                    .toggleStyle(CheckBoxToggleStyle())
-                                    
-                                    Spacer()
-                                    
-                                    Button(action: {
-                                        deleteItem(item)
-                                    }) {
-                                        Image(systemName: "trash")
-                                            .foregroundColor(.red)
-                                    }
-                                    .buttonStyle(BorderlessButtonStyle())
-                                }
-                                
-                                if let description = item.desc, !description.isEmpty {
+                        List {
+                            ForEach(items) { item in
+                                VStack(alignment: .leading) {
                                     HStack {
+                                        Toggle(isOn: Binding(
+                                            get: { item.completedDate != nil },
+                                            set: { isChecked in
+                                                if isChecked {
+                                                    item.completedDate = Date()
+                                                } else {
+                                                    item.completedDate = nil
+                                                }
+                                                saveContext()
+                                            }
+                                        )) {
+                                            Text(item.name ?? "Unknown Item")
+                                        }
+                                        .toggleStyle(CheckBoxToggleStyle())
+                                        
+                                        Spacer()
+                                        
+                                        Button(action: {
+                                            deleteItem(item)
+                                        }) {
+                                            Image(systemName: "trash")
+                                                .foregroundColor(.red)
+                                        }
+                                        .buttonStyle(BorderlessButtonStyle())
+                                    }
+                                    HStack {
+                                        if let description = item.desc {
                                         Text(description)
                                             .font(.footnote)
                                             .foregroundColor(.gray)
@@ -111,110 +83,112 @@ struct TaskListView: View {
                                                 .foregroundColor(.gray)
                                         }
                                     }
-                                    .padding(.top, 5)
+                                    }
                                 }
+                                .padding(.vertical, 10)
                             }
-                            .padding(.vertical, 10)
+                            .onDelete(perform: deleteItems)
                         }
-                        .onDelete(perform: deleteItems)
-                    }
-                    .listStyle(PlainListStyle())
-
-                    Spacer()
-
-                    HStack {
-                        Button(action: { isShowingSheetAdd = true }) {
-                            Label("Add Item", systemImage: "plus")
-                        }
-                        .padding()
-                        .disabled(list.title == nil)
+                        .listStyle(DefaultListStyle())
+                        .frame(width: geometry.size.width) // Full width of the window
 
                         Spacer()
 
-                        Button(action: { isShowingSheetGPT = true }) {
-                            Image("gpt")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 20, height: 20)
+                        HStack {
+                            Button(action: { isShowingSheetAdd = true }) {
+                                Label("Add Item", systemImage: "plus")
+                            }
+                            .padding()
+                            .disabled(list.title == nil)
+
+                            Spacer()
+
+                            Button(action: { isShowingSheetGPT = true }) {
+                                Image("gpt")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 20, height: 20)
+                            }
+                            .padding()
                         }
-                        .padding()
-                    }
-                    .padding(.bottom, 20)
-                } else {
-                    Text("No list available. Please create a list first.")
-                        .font(.headline)
-                        .padding()
-                }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .sheet(isPresented: $isShowingSheetAdd) {
-                VStack {
-                    Text("Enter Item Name")
-                        .font(.headline)
-                    TextField("Name", text: $itemName)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding()
-                    Text("Enter Description (optional)")
-                        .font(.headline)
-                    TextField("Description", text: $itemDescription)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding()
-                    HStack {
-                        Button("Add Item") {
-                            addItem()
-                            isShowingSheetAdd = false
-                        }
-                        .padding()
-                        .disabled(itemName.isEmpty)
-                        Spacer()
-                        Button("Cancel") {
-                            isShowingSheetAdd = false
-                        }
-                        .padding()
+                        .padding(.bottom, 20)
+                    } else {
+                        Text("No list available. Please create a list first.")
+                            .font(.headline)
+                            .padding()
                     }
                 }
-                .padding()
-            }
-            .sheet(isPresented: $isShowingSheetGPT) {
-                VStack {
-                    Text("What do you want to make?")
-                        .font(.headline)
-                    TextField("Dish", text: $dishName)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding()
-                    Text("How many are you serving?")
-                        .font(.headline)
-                    Text("Number of people: \(numPeople)")
-                        .font(.headline)
-                        .padding()
-                    Slider(
-                        value: Binding(
-                            get: { Double(numPeople) },
-                            set: { numPeople = Int($0) }
-                        ),
-                        in: 1...100,
-                        step: 1
-                    )
+                .frame(width: geometry.size.width, height: geometry.size.height)
+                .sheet(isPresented: $isShowingSheetAdd) {
+                    VStack {
+                        Text("Enter Item Name")
+                            .font(.headline)
+                        TextField("Name", text: $itemName)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding()
+                        Text("Enter Description (optional)")
+                            .font(.headline)
+                        TextField("Description", text: $itemDescription)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding()
+                        HStack {
+                            Button("Add Item") {
+                                addItem()
+                                isShowingSheetAdd = false
+                            }
+                            .padding()
+                            .disabled(itemName.isEmpty)
+                            Spacer()
+                            Button("Cancel") {
+                                isShowingSheetAdd = false
+                            }
+                            .padding()
+                        }
+                    }
                     .padding()
-                    HStack {
-                        Button("Ask your AI assistant") {
-                            isShowingSheetGPT = false
-                            askAi()
-                        }
-                        .padding()
-                        .disabled(dishName.isEmpty)
-                        .disabled(numPeople == 0)
-                        Spacer()
-                        Button("Cancel") {
-                            isShowingSheetGPT = false
-                        }
-                        .padding()
-                    }
                 }
-                .padding()
+                .sheet(isPresented: $isShowingSheetGPT) {
+                    VStack {
+                        Text("What do you want to make?")
+                            .font(.headline)
+                        TextField("Dish", text: $dishName)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding()
+                        Text("How many are you serving?")
+                            .font(.headline)
+                        Text("Number of people: \(numPeople)")
+                            .font(.headline)
+                            .padding()
+                        Slider(
+                            value: Binding(
+                                get: { Double(numPeople) },
+                                set: { numPeople = Int($0) }
+                            ),
+                            in: 1...100,
+                            step: 1
+                        )
+                        .padding()
+                        HStack {
+                            Button("Ask your AI assistant") {
+                                isShowingSheetGPT = false
+                                askAi()
+                            }
+                            .padding()
+                            .disabled(dishName.isEmpty)
+                            .disabled(numPeople == 0)
+                            Spacer()
+                            Button("Cancel") {
+                                isShowingSheetGPT = false
+                            }
+                            .padding()
+                        }
+                    }
+                    .padding()
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
+            .frame(width: geometry.size.width, height: geometry.size.height)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private func saveContext() {
@@ -260,7 +234,6 @@ struct TaskListView: View {
     }
 }
 
-
 struct CheckBoxToggleStyle: ToggleStyle {
     func makeBody(configuration: Configuration) -> some View {
         HStack {
@@ -286,3 +259,4 @@ private let itemFormatter: DateFormatter = {
 #Preview {
     ListManagerView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }
+

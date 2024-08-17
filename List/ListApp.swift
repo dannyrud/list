@@ -13,7 +13,7 @@ struct ListApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ListManagerView() // Change to ListManagerView
+            ListManagerView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
