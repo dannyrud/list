@@ -21,6 +21,10 @@
       {
         "comment": "",
         "key": "Cancel"
+      },
+      {
+        "comment": "",
+        "key": "Select a list"
       }
     ]
   },

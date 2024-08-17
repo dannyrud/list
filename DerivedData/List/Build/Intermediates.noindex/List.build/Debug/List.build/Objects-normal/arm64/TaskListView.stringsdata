@@ -4,15 +4,11 @@
     "Localizable": [
       {
         "comment": "",
-        "key": "Item Details"
+        "key": "No list available. Please create a list first."
       },
       {
         "comment": "",
         "key": "Completed on: %@"
-      },
-      {
-        "comment": "",
-        "key": "No list available. Please create a list first."
       },
       {
         "comment": "",

@@ -19,7 +19,7 @@ struct ListManagerView: View {
     @State private var newListName = ""
 
     var body: some View {
-        NavigationView {
+        NavigationSplitView {
             VStack {
                 List {
                     ForEach(taskLists) { taskList in
@@ -70,6 +70,10 @@ struct ListManagerView: View {
                 }
                 .padding()
             }
+        } detail: {
+            Text("Select a list")
+                .font(.headline)
+                .foregroundColor(.gray)
         }
     }
 
@@ -100,4 +104,3 @@ struct ListManagerView: View {
         }
     }
 }
-
