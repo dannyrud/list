@@ -11,6 +11,81 @@ import SwiftUI
 // Define your GPT API-related details
 var apiToken = "";
 let apiUrl = "https://api.openai.com/v1/chat/completions"
+struct RecipeItem {
+    let name: String
+    let notes: String
+}
+
+struct RecipeView: View {
+    @Environment(\.managedObjectContext) private var viewContext
+    @ObservedObject var list: TaskList
+    @Binding var recipeItems: [RecipeItem]
+    @Binding var isShowingRecipeView: Bool
+
+    var body: some View {
+        NavigationView {
+            VStack {
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        isShowingRecipeView = false
+                    }) {
+                        Text("Exit")
+                            .font(.headline)
+                            .padding()
+                    }
+                }
+                .padding(.top)
+
+                List {
+                    ForEach(recipeItems, id: \.name) { item in
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(item.name)
+                                    .font(.headline)
+                                Text(item.notes)
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
+                            }
+                            .padding(.vertical, 5)
+                            
+                            Spacer()
+                            
+                            Button(action: {
+                                addItemToList(item)
+                            }) {
+                                Text("Add")
+                                    .font(.headline)
+                                    .foregroundColor(.blue)
+                                    .padding()
+                            }
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            .frame(width: 300, height: 400)
+        }
+        .frame(width: 300, height: 400)    }
+
+    private func addItemToList(_ item: RecipeItem) {
+        let newItem = ListItem(context: viewContext)
+        newItem.name = item.name
+        newItem.desc = item.notes
+        newItem.listItemToTaskList = list
+
+        do {
+            try viewContext.save()
+            // Remove item from recipeItems after adding to the list
+            if let index = recipeItems.firstIndex(where: { $0.name == item.name }) {
+                recipeItems.remove(at: index)
+            }
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
+    }
+}
 
 struct TaskListView: View {
   @Environment(\.managedObjectContext) private var viewContext
@@ -18,10 +93,13 @@ struct TaskListView: View {
 
   @State private var isShowingSheetAdd = false
   @State private var isShowingSheetGPT = false
+  @State private var isShowingRecipeView = false
   @State private var itemName: String = ""
   @State private var dishName: String = ""
   @State private var numPeople: Int = 0
   @State private var itemDescription: String = ""
+  @State private var recipeItems: [RecipeItem] = []
+    
 
   @FetchRequest var items: FetchedResults<ListItem>
 
@@ -125,6 +203,9 @@ struct TaskListView: View {
           }
         }
         .frame(width: geometry.size.width, height: geometry.size.height)
+        .sheet(isPresented: $isShowingRecipeView) {
+                                RecipeView(list: list, recipeItems: $recipeItems, isShowingRecipeView: $isShowingRecipeView)
+                            }
         .sheet(isPresented: $isShowingSheetAdd) {
           VStack {
             Text("Enter Item Name")
@@ -246,7 +327,7 @@ struct TaskListView: View {
       [
         "role": "user",
         "content":
-          "Provide a list of ingredients for \(dishName) for \(numPeople) people. The response should be in a structured format listing each item and the amount needed. Do not respond with ANYTHING besides a structured list of items and amounts so the response json is easy to parse",
+          "Provide a list of ingredients for \(dishName) for \(numPeople) people. The response should be in a structured format listing each item and the amount needed. Do not respond with ANYTHING besides a structured list of items and amounts so the response json is easy to parse here is an example of your response if I asked to make pizza. {\n  \"Dough\": \"1 pound pizza dough\",\n  \"Tomato sauce\": \"1/2 cup\",\n  \"Mozzarella cheese\": \"1 cup shredded\",\n  \"Toppings of choice\": \"e.g. pepperoni, mushrooms, bell peppers, onions, etc.\",\n  \"Olive oil\": \"1 tablespoon\",\n  \"Salt\": \"1/2 teaspoon\",\n  \"Black pepper\": \"1/4 teaspoon\",\n  \"Italian seasoning\": \"1/2 teaspoon\"\n}",
       ],
     ]
 
@@ -290,9 +371,10 @@ struct TaskListView: View {
           let message = choices.first?["message"] as? [String: Any],
           let content = message["content"] as? String
         {
+        let parsedItems = parseResponse(content: content)
           DispatchQueue.main.async {
-            //Todo here
-            print("JSON Response: \(jsonResponse)")
+              recipeItems = parsedItems
+              isShowingRecipeView = true
           }
         } else {
           print("Failed to parse response, unexpected format")
@@ -305,6 +387,39 @@ struct TaskListView: View {
   }
 
 }
+
+func parseResponse(content: String) -> [RecipeItem] {
+    var items: [RecipeItem] = []
+
+    // Split the content into lines
+    let lines = content.split(separator: "\n")
+    for line in lines {
+        // Split each line into parts separated by ':'
+        let parts = line.split(separator: ":")
+        if parts.count == 2 {
+            // Extract and trim the item name and description, removing surrounding quotes and extra characters
+            let name = String(parts[0])
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .trimmingCharacters(in: CharacterSet(charactersIn: "\""))
+
+            let notes = String(parts[1])
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .trimmingCharacters(in: CharacterSet(charactersIn: "\""))
+                .trimmingCharacters(in: CharacterSet(charactersIn: ","))
+            
+            // Remove trailing quote if it exists
+            let cleanedNotes = notes.trimmingCharacters(in: CharacterSet(charactersIn: "\""))
+
+            // Append the item to the list
+            items.append(RecipeItem(name: name, notes: cleanedNotes))
+        }
+    }
+
+    return items
+}
+
+
+
 
 struct CheckBoxToggleStyle: ToggleStyle {
   func makeBody(configuration: Configuration) -> some View {
